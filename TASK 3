@@ -1,0 +1,62 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static int[][] directions = new int[][] { new int[] { -1, 0 }, new int[] { 1, 0 }, new int[] { 0, -1 }, new int[] { 0, 1 } };
+
+    static bool NavigateMinefield(int[,] minefield, int startX, int startY, int endX, int endY)
+    {
+        int n = minefield.GetLength(0);
+        int m = minefield.GetLength(1);
+        bool[,] visited = new bool[n, m];
+
+        return DFS(startX, startY, endX, endY, minefield, visited);
+    }
+
+    static bool DFS(int x, int y, int endX, int endY, int[,] minefield, bool[,] visited)
+    {
+        int n = minefield.GetLength(0);
+        int m = minefield.GetLength(1);
+
+        if (x == endX && y == endY)
+            return true;
+
+        visited[x, y] = true;
+
+        foreach (int[] direction in directions)
+        {
+            int nextX = x + direction[0];
+            int nextY = y + direction[1];
+
+            if (nextX >= 0 && nextX < n && nextY >= 0 && nextY < m && !visited[nextX, nextY] && minefield[nextX, nextY] != 1)
+            {
+                if (DFS(nextX, nextY, endX, endY, minefield, visited))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    static void Main(string[] args)
+    {
+        int[,] minefield = new int[,]
+        {
+            { 0, 0, 0, 0 },
+            { 0, 1, 1, 0 },
+            { 0, 0, 0, 0 },
+            { 0, 1, 1, 0 },
+            { 0, 0, 0, 1 }
+        };
+
+        int startX = 0;
+        int startY = 0;
+        int endX = 4;
+        int endY = 3;
+
+        bool isPathPossible = NavigateMinefield(minefield, startX, startY, endX, endY);
+
+        Console.WriteLine("Is there a safe path? " + (isPathPossible ? "Yes" : "No"));
+    }
+}
